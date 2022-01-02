@@ -4,6 +4,7 @@ import { vertexShader } from "./shaders/vertexShader"
 import { fragmentShader } from "./shaders/fragmentShader"
 import { useFrame } from "@react-three/fiber"
 import { ShaderMaterial } from "three"
+import { lerp } from "three/src/math/MathUtils"
 
 const Material = ({ texture }: any) => {
   const ref = useRef<ShaderMaterial>(null!)
@@ -21,8 +22,17 @@ const Material = ({ texture }: any) => {
 
   useFrame(({ clock, mouse }) => {
     ref.current.uniforms.uTime.value = clock.getElapsedTime()
-    const x = mouse.x * 0.5 + 0.5
-    const y = mouse.y * 0.5 + 0.5
+
+    const x = lerp(
+      ref.current.uniforms.uMouse.value.x,
+      mouse.x * 0.5 + 0.5,
+      0.1
+    )
+    const y = lerp(
+      ref.current.uniforms.uMouse.value.y,
+      mouse.y * 0.5 + 0.5,
+      0.1
+    )
     ref.current.uniforms.uMouse.value = new THREE.Vector2(x, y)
 
     ref.current.uniformsNeedUpdate = true

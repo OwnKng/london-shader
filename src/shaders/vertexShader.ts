@@ -42,6 +42,10 @@ export const vertexShader = /* glsl */ `
         //_ size 
         float psize = elevation / 10.0; 
 
+        //_ interaction
+        displaced.z -= uMouse.y * 20.0;
+        displaced.x += uMouse.x * 10.0;
+
         //_ final position
         vec4 transformedPosition = modelViewMatrix * vec4(displaced, 1.0); 
         transformedPosition.xyz += position * max(psize, 0.4);
