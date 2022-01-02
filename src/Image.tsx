@@ -19,6 +19,8 @@ const Image = () => {
 
   const index = useMemo(() => new Uint16Array([0, 2, 1, 2, 3, 1]), [])
 
+  const uvs = useMemo(() => new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]), [])
+
   const { offsets, indices } = useMemo(() => {
     const offsets = new Float32Array(numPoints * 3)
     const indices = new Uint16Array(numPoints)
@@ -41,6 +43,10 @@ const Image = () => {
         <bufferAttribute
           attachObject={["attributes", "position"]}
           args={[vertices, 3]}
+        />
+        <bufferAttribute
+          attachObject={["attributes", "adjustedUv"]}
+          args={[uvs, 2]}
         />
         <bufferAttribute
           attach='index'
