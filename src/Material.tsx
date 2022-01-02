@@ -14,12 +14,17 @@ const Material = ({ texture }: any) => {
       uTime: { value: 0 },
       uTexture: { value: texture },
       uTextureSize: { value: new THREE.Vector2(width, height) },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
     }),
     []
   )
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, mouse }) => {
     ref.current.uniforms.uTime.value = clock.getElapsedTime()
+    const x = mouse.x * 0.5 + 0.5
+    const y = mouse.y * 0.5 + 0.5
+    ref.current.uniforms.uMouse.value = new THREE.Vector2(x, y)
+
     ref.current.uniformsNeedUpdate = true
   })
 

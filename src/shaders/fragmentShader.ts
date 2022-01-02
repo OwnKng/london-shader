@@ -2,19 +2,16 @@ import { hsl2rgb } from "./hsl2rgb"
 
 export const fragmentShader = /* glsl */ `
     varying float vStrength; 
-    varying vec2 vUv; 
-    varying float vElevation; 
-    varying float vRings; 
+    varying float vDetails; 
+    varying vec2 vMouse; 
 
     ${hsl2rgb}
 
     void main() {
-        float color = vElevation * 0.2;
-        float ringsStep = mod(vRings * 10.0, 2.5);
-
-        vec3 finalColor = hsl2rgb(0.6, 0.5, 0.5 + 1.0 - ringsStep * 0.5); 
         if(vStrength < 0.6) discard; 
+        float brightness = mod(vDetails * 2.0, 1.0);
+        vec3 color = hsl2rgb(0.55 + 0.05 * vMouse.x, 0.5 + brightness * 0.4, 0.5 + brightness * 0.4);
 
-        gl_FragColor = vec4(finalColor, 1.0);
+        gl_FragColor = vec4(color, 1.0);
     }
 `

@@ -8,6 +8,8 @@ const Image = () => {
   const { width, height } = map.image
   const numPoints = width * height
 
+  const ref = useRef(null!)
+
   //_ vertices and index for the map
   const vertices = useMemo(
     () =>
@@ -38,6 +40,7 @@ const Image = () => {
     <instancedMesh
       args={[null, null, numPoints]}
       position={[-width / 2, -height / 2, 0]}
+      ref={ref}
     >
       <bufferGeometry>
         <bufferAttribute
