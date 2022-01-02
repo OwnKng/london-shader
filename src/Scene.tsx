@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Canvas } from "@react-three/fiber"
 import Image from "./Image"
 import { Suspense } from "react"

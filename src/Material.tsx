@@ -16,7 +16,7 @@ const Material = ({ texture }: any) => {
       uTextureSize: { value: new THREE.Vector2(width, height) },
       uMouse: { value: new THREE.Vector2(0.5, 0.5) },
     }),
-    []
+    [texture, width, height]
   )
 
   useFrame(({ clock, mouse }) => {
