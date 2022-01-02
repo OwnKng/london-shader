@@ -8,7 +8,6 @@ export const fragmentShader = /* glsl */ `
     ${hsl2rgb}
 
     void main() {
-        if(vStrength < 0.6) discard; 
         float brightness = mod(vDetails * 2.0, 1.0);
         vec3 color = hsl2rgb(0.55 + 0.05 * vMouse.x, 0.5 + brightness * 0.4, 0.5 + brightness * 0.4);
 

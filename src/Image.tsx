@@ -7,6 +7,7 @@ const Image = () => {
   const map = useTexture("map.png")
   const { width, height } = map.image
   const numPoints = width * height
+  const threshold = 180
 
   const ref = useRef(null!)
 
@@ -23,22 +24,51 @@ const Image = () => {
 
   const uvs = useMemo(() => new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]), [])
 
-  const { offsets, indices } = useMemo(() => {
-    const offsets = new Float32Array(numPoints * 3)
-    const indices = new Uint16Array(numPoints)
+  //_ image cleanup
+  const { originalColors, numVisible } = useMemo(() => {
+    let numVisible = 0
+
+    const canvas = document.createElement("canvas")
+    const ctx = canvas.getContext("2d")
+
+    canvas.width = width
+    canvas.height = height
+
+    ctx.scale(1, -1)
+    ctx.drawImage(map.image, 0, 0, width, height * -1)
+
+    const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const originalColors = Float32Array.from(data)
 
     for (let i = 0; i < numPoints; i++) {
-      offsets[i * 3 + 0] = i % width
-      offsets[i * 3 + 1] = Math.floor(i / width)
-      offsets[i * 3 + 2] = 0
+      if (originalColors[i * 4 + 0] >= threshold) numVisible++
+    }
+
+    return { originalColors, numVisible }
+  }, [numPoints, width, height, map])
+
+  //_ set instance attributes
+  const { offsets, indices } = useMemo(() => {
+    const offsets = new Float32Array(numVisible * 3)
+    const indices = new Uint16Array(numVisible)
+
+    for (let i = 0, j = 0; i < numPoints; i++) {
+      if (originalColors[i * 4 + 0] >= threshold) {
+        offsets[j * 3 + 0] = i % width
+        offsets[j * 3 + 1] = Math.floor(i / width)
+        offsets[j * 3 + 2] = 0
+        j++
+      }
     }
 
     return { offsets, indices }
-  }, [numPoints, width])
+  }, [numVisible, originalColors, threshold, numPoints, width])
+
+  console.log(numPoints, numVisible)
 
   return (
     <instancedMesh
-      args={[null, null, numPoints]}
+      args={[null, null, numVisible]}
       position={[-width / 2, -height / 2, 0]}
       ref={ref}
     >
