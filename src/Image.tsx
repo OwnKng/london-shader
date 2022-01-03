@@ -57,6 +57,7 @@ const Image = () => {
         offsets[j * 3 + 0] = i % width
         offsets[j * 3 + 1] = Math.floor(i / width)
         offsets[j * 3 + 2] = 0
+        indices[j] = [i]
         j++
       }
     }
