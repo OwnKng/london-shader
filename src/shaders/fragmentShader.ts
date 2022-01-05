@@ -9,9 +9,10 @@ export const fragmentShader = /* glsl */ `
     ${hsl2rgb}
 
     void main() {
-        float wave = abs(sin(vTime)); 
+        float sinWave = mix(0.0, 1.0, vDetails / 50.0);
+       
         float brightness = (vDetails) * 0.025; 
-        vec3 color = hsl2rgb(0.5 + brightness * 0.5, 0.5, 0.5 + brightness * 0.5);
+        vec3 color = hsl2rgb(0.5 + sinWave, 0.3, 0.5 + sinWave);
 
         gl_FragColor = vec4(color, 1.0);
     }
