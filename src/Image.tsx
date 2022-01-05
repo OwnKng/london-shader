@@ -65,8 +65,6 @@ const Image = () => {
     return { offsets, indices }
   }, [numVisible, originalColors, threshold, numPoints, width])
 
-  console.log(numPoints, numVisible)
-
   return (
     <instancedMesh
       args={[null, null, numVisible]}
