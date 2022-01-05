@@ -45,6 +45,7 @@ const Material = ({ texture }: any) => {
       vertexShader={vertexShader}
       fragmentShader={fragmentShader}
       transparent
+      blending={THREE.AdditiveBlending}
     />
   )
 }

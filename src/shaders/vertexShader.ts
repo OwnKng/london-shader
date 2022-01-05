@@ -24,19 +24,30 @@ export const vertexShader = /* glsl */ `
 
     ${noise}
 
+    float generateElevation(vec3 _position) {
+
+        float elevation = 1.0;  
+
+        float wave1 = distance(_position.xy, vec2(1.0, 0.0));
+        float wave2 = 1.0 - distance(_position.yy, vec2(0.0));
+        float wave = smoothstep(0.7, 1.0, wave1) + smoothstep(0.8, 1.2, wave2);
+
+        elevation += wave;
+        elevation += (cnoise(vec3(_position.xy * 8.0, wave)) + 0.5);
+        elevation += (cnoise(vec3((_position.xy + 123.0) * 10.0 , 1.0)) + 0.5);
+
+        return elevation; 
+    }
+
     void main() {
         vec3 displaced = offset; 
         vec2 particleUv = offset.xy / uTextureSize; 
 
         //_ distort the positions
-        float dist = (sin(particleUv.x * 3.142 * 2.0) * 0.5 + 0.5 + cos(particleUv.y * 3.142 * 1.5) * 0.5 + 0.5);  
-        float bigNoise = cnoise(vec3(dist, particleUv.y, particleUv.x)) * 6.0;
-        float details = (cnoise(vec3(bigNoise, 0.1, 0.1)) + 1.0) * 6.0;
-        
-        displaced.z += ceil(details); 
-
-        //_ size 
-       
+        float elevation = generateElevation(vec3(particleUv, pindex));   
+        float wave = sin(uTime) * 0.5 + 0.5; 
+        elevation = floor(elevation * 4.0) * uMouse.y;
+        displaced.z += 2.0 + elevation; 
 
         //_ interaction
         displaced.z -= uMouse.y * 20.0;
@@ -44,12 +55,12 @@ export const vertexShader = /* glsl */ `
 
         //_ final position
         vec4 transformedPosition = modelViewMatrix * vec4(displaced, 1.0); 
-        transformedPosition.xyz += position * 0.8;
+        transformedPosition.xyz += position * 0.8; 
         gl_Position = projectionMatrix * transformedPosition;
  
         //_ passing the varyings
         vUv = adjustedUv; 
-        vDetails = details; 
+        vDetails = elevation; 
         vMouse = uMouse; 
         vTime = uTime; 
     }
